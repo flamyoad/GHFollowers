@@ -3,5 +3,5 @@
 Programmatic UIKit sprinkled with RxSwift
 
 Todo:
-- DI
+- DI, remove all static methods. 
 - Unit testing , Cuckoo
