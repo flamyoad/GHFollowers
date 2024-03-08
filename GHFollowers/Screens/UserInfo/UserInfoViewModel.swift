@@ -11,16 +11,14 @@ import RxRelay
 
 class UserInfoViewModel {
     
-    // ??? Single please
-    func getUserInfo(for username: String) -> Observable<User> {
-        return Observable.create { observable in
+    func getUserInfo(for username: String) -> Single<User> {
+        return Single.create { single in
             let task = Task {
                 do {
                     let userInfo = try await NetworkManager.shared.getUserInfo(for: username)
-                    observable.onNext(userInfo)
-                    observable.onCompleted()
+                    single(.success(userInfo))
                 } catch {
-                    observable.onError(error)
+                    single(.failure(error))
                 }
             }
             return Disposables.create {

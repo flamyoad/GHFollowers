@@ -34,19 +34,16 @@ class UserInfoVC: UIViewController {
         observeUserInfo()
     }
     
-    // WOW!!!
     func observeUserInfo() {
         viewModel.getUserInfo(for: username)
             .observe(on: MainScheduler.instance)
             .subscribe(
-                onNext: { [weak self] userInfo in
-                    guard let self = self else { return }
-                    self.configureUIElements(with: userInfo)
+                onSuccess: { [weak self] userInfo in
+                    self?.configureUIElements(with: userInfo)
                 },
-                onError: { [weak self] error in
-                    guard let self = self else { return }
+                onFailure: { [weak self] error in
                     if let apiError = error as? ApiError {
-                        self.presentGFAlertOnMainThread(title: "Something went wrong", message: apiError.rawValue, buttonTitle: "Ok")
+                        self?.presentGFAlertOnMainThread(title: "Something went wrong", message: apiError.rawValue, buttonTitle: "Ok")
                     }
                 }
             )

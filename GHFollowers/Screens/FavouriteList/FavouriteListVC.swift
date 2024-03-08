@@ -6,14 +6,19 @@
 //
 
 import UIKit
+import RxSwift
 
 class FavouriteListVC: UIViewController {
-    
+    private let disposeBag = DisposeBag()
+
     let tableView = UITableView()
     var favourites: [Follower] = []
-
+    
+    var viewModel: FavouriteListViewModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = FavouriteListViewModel()
         view.backgroundColor = .systemCyan
         setupViewController()
         setupTableView()
@@ -21,7 +26,7 @@ class FavouriteListVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getFavourites()
+        initFavouritesList()
     }
     
     func setupViewController() {
@@ -36,29 +41,27 @@ class FavouriteListVC: UIViewController {
         tableView.rowHeight = 80
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.register(FavouriteCell.self, forCellReuseIdentifier: FavouriteCell.reuseID)
     }
     
-    func getFavourites() {
-        PersistenceManager.retrieveFavourites { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let favourites):
-                if (favourites.isEmpty) {
-                    self.showEmptyStateView(with: "No favourites?\nAdd one of the follower screen", in: self.view)
-                } else {
-                    self.favourites = favourites
-                    DispatchQueue.main.async {
+    func initFavouritesList() {
+        viewModel.retrieveFavourites()
+            .observe(on: MainScheduler.instance)
+            .subscribe(
+                onSuccess: { [weak self] favourites in
+                    guard let self = self else { return }
+                    if (favourites.isEmpty) {
+                        self.showEmptyStateView(with: "No favourites?\nAdd one of the follower screen", in: self.view)
+                    } else {
+                        self.favourites = favourites
                         self.tableView.reloadData()
                         self.view.bringSubviewToFront(self.tableView)
                     }
+                },
+                onFailure: { [weak self] error in
+                    self?.presentGFAlertOnMainThread(title: "Something went wrong", message: error.localizedDescription, buttonTitle: "Ok")
                 }
-            case .failure(let error):
-                self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
-            }
-        }
+            ).disposed(by: disposeBag)
     }
 }
 
@@ -84,7 +87,7 @@ extension FavouriteListVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
         let favourite = favourites[indexPath.row]
-        
+    
         PersistenceManager.updateWith(favourite: favourite, actionType: .remove) { [weak self] error in
             guard let self = self else { return }
             guard let error = error else { 
