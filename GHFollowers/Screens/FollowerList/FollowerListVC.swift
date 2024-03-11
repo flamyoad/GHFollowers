@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class FollowerListVC: UIViewController {
     
@@ -13,8 +14,9 @@ class FollowerListVC: UIViewController {
         case main
     }
 
-    private var networkManager: NetworkManager! // ???? why
-    private var persistenceManager: PersistenceManager!
+    private var networkManager: NetworkManager! // REMOVE
+    private let disposeBag = DisposeBag()
+    private var viewModel: FollowerListViewModel!
     
     var username: String!
     var followers: [Follower] = []
@@ -31,8 +33,8 @@ class FollowerListVC: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.username = username
         self.title = username
+        self.viewModel = FollowerListViewModel(dependencies: ServiceLocator.shared)
         self.networkManager = ServiceLocator.shared.getNetworkManager()
-        self.persistenceManager = ServiceLocator.shared.getPersistenceManager()
     }
     
     required init?(coder: NSCoder) {
@@ -135,32 +137,22 @@ class FollowerListVC: UIViewController {
     }
     
     @objc func addButtonTapped() {
-        showLoadingView()
-        
-        defer {
-            dismissLoadingView()
-        }
-        
-        Task {
-            do {
-                let user = try await networkManager.getUserInfo(for: username)
-                let favourite = Follower(login: user.login, avatarUrl: user.avatarUrl)
-                persistenceManager.updateWith(favourite: favourite, actionType: .add) { [weak self] error in
-                    guard let self = self else { return }
-                    guard let error = error else {
-                        self.presentGFAlertOnMainThread(title: "Success", message: "You have successfully favourited this user", buttonTitle: "Hooray")
-                        return
-                    }
-                    self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Hooray")
-                }
-            } catch {
-                if let apiError = error as? ApiError {
-                    presentGFAlertOnMainThread(title: "Something went wrong", message: apiError.rawValue, buttonTitle: "Ok")
+        viewModel.addAsFollower(userName: self.username)
+            .do(onError: { error in
+                self.dismissLoadingView()
+                if let error = error as? ApiError {
+                    self.presentGFAlertOnMainThread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
                 } else {
-                    presentDefaultError()
+                    self.presentDefaultError()
                 }
-            }
-        }
+            }, onCompleted: { // ?? where is doOnFinally?
+                self.dismissLoadingView()
+                self.presentGFAlertOnMainThread(title: "Success", message: "You have successfully favourited this user", buttonTitle: "Hooray")
+            }, onSubscribe: {
+                self.showLoadingView()
+            })
+            .subscribe()
+            .disposed(by: disposeBag)
     }
 }
 
