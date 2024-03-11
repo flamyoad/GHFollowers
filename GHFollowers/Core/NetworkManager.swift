@@ -7,11 +7,16 @@
 
 import UIKit
 
-class NetworkManager {
-    static let shared = NetworkManager()
+protocol NetworkManager {
+    func getFollowers(for username: String, page: Int) async throws -> [Follower]
+    func getUserInfo(for username: String) async throws -> User
+}
+
+class NetworkManagerImpl: NetworkManager {
+    
+    static let shared = NetworkManagerImpl()
     
     private let baseURL = "https://api.github.com"
-    let cache = NSCache<NSString, UIImage>()
     let decoder = JSONDecoder()
     
     private init() {
@@ -56,23 +61,5 @@ class NetworkManager {
         } catch {
             throw ApiError.invalidData
         }
-    }
-    
-    func downloadImage(from urlString: String) async -> UIImage? {
-        let cacheKey = NSString(string: urlString)
-        
-        if let image = cache.object(forKey: cacheKey) { return image }
-        
-        guard let url = URL(string: urlString) else { return nil }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let image = UIImage(data: data) else { return nil }
-            self.cache.setObject(image, forKey: cacheKey)
-            return image
-        } catch {
-            return nil
-        }
-        
     }
 }

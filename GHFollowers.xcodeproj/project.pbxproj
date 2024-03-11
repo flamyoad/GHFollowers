@@ -28,6 +28,10 @@
 		E724C5632B80C1F600FE5809 /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E724C5622B80C1F600FE5809 /* UIViewController+Ext.swift */; };
 		E79EBA892B9B77B3004743D1 /* UserInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EBA882B9B77B3004743D1 /* UserInfoViewModel.swift */; };
 		E79EBA8F2B9B9A4A004743D1 /* FavouriteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EBA8E2B9B9A4A004743D1 /* FavouriteListViewModel.swift */; };
+		E7A7CCFA2B9F2A10000D9244 /* UserInfoDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A7CCF92B9F2A10000D9244 /* UserInfoDependencies.swift */; };
+		E7A7CCFD2B9F2A77000D9244 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A7CCFC2B9F2A77000D9244 /* ServiceLocator.swift */; };
+		E7A7CCFF2B9F3019000D9244 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A7CCFE2B9F3019000D9244 /* ImageManager.swift */; };
+		E7A7CD012B9F363C000D9244 /* FavouriteListDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A7CD002B9F363C000D9244 /* FavouriteListDependencies.swift */; };
 		E7B565FC2B89D13F00D532F9 /* UserInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B565FB2B89D13F00D532F9 /* UserInfoVC.swift */; };
 		E7B565FE2B89DA1500D532F9 /* GFUserInfoHeaderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B565FD2B89DA1500D532F9 /* GFUserInfoHeaderVC.swift */; };
 		E7B566002B89DA9D00D532F9 /* GFSecondaryTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B565FF2B89DA9D00D532F9 /* GFSecondaryTitleLabel.swift */; };
@@ -101,6 +105,10 @@
 		E724C5622B80C1F600FE5809 /* UIViewController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ext.swift"; sourceTree = "<group>"; };
 		E79EBA882B9B77B3004743D1 /* UserInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewModel.swift; sourceTree = "<group>"; };
 		E79EBA8E2B9B9A4A004743D1 /* FavouriteListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteListViewModel.swift; sourceTree = "<group>"; };
+		E7A7CCF92B9F2A10000D9244 /* UserInfoDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoDependencies.swift; sourceTree = "<group>"; };
+		E7A7CCFC2B9F2A77000D9244 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		E7A7CCFE2B9F3019000D9244 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
+		E7A7CD002B9F363C000D9244 /* FavouriteListDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteListDependencies.swift; sourceTree = "<group>"; };
 		E7B565FB2B89D13F00D532F9 /* UserInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoVC.swift; sourceTree = "<group>"; };
 		E7B565FD2B89DA1500D532F9 /* GFUserInfoHeaderVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GFUserInfoHeaderVC.swift; sourceTree = "<group>"; };
 		E7B565FF2B89DA9D00D532F9 /* GFSecondaryTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GFSecondaryTitleLabel.swift; sourceTree = "<group>"; };
@@ -205,6 +213,7 @@
 			children = (
 				E7B860222B81E0BE0052F6C0 /* Utilities */,
 				E7B8601F2B81D6A50052F6C0 /* Core */,
+				E7A7CCFB2B9F2A62000D9244 /* DI */,
 				E7B8601A2B81D2220052F6C0 /* Model */,
 				E724C5302B808C6300FE5809 /* Info.plist */,
 				E7B860182B81CFFA0052F6C0 /* Main */,
@@ -245,6 +254,7 @@
 			children = (
 				E724C5542B80934600FE5809 /* FavouriteListVC.swift */,
 				E79EBA8E2B9B9A4A004743D1 /* FavouriteListViewModel.swift */,
+				E7A7CD002B9F363C000D9244 /* FavouriteListDependencies.swift */,
 			);
 			path = FavouriteList;
 			sourceTree = "<group>";
@@ -254,6 +264,7 @@
 			children = (
 				E7B565FB2B89D13F00D532F9 /* UserInfoVC.swift */,
 				E79EBA882B9B77B3004743D1 /* UserInfoViewModel.swift */,
+				E7A7CCF92B9F2A10000D9244 /* UserInfoDependencies.swift */,
 			);
 			path = UserInfo;
 			sourceTree = "<group>";
@@ -264,6 +275,14 @@
 				E724C55A2B80AE2000FE5809 /* FollowerListVC.swift */,
 			);
 			path = FollowerList;
+			sourceTree = "<group>";
+		};
+		E7A7CCFB2B9F2A62000D9244 /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				E7A7CCFC2B9F2A77000D9244 /* ServiceLocator.swift */,
+			);
+			path = DI;
 			sourceTree = "<group>";
 		};
 		E7B566062B89F6D400D532F9 /* ViewControllers */ = {
@@ -344,6 +363,7 @@
 			children = (
 				E7B860202B81D6B70052F6C0 /* NetworkManager.swift */,
 				E7BB92E02B8E24D800B1CD50 /* PersistenceManager.swift */,
+				E7A7CCFE2B9F3019000D9244 /* ImageManager.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -623,6 +643,8 @@
 				E724C5632B80C1F600FE5809 /* UIViewController+Ext.swift in Sources */,
 				E7D441B02B84F2E5006EBD73 /* UIHelper.swift in Sources */,
 				E7B566082B89F70300D532F9 /* GFItemInfoVC.swift in Sources */,
+				E7A7CD012B9F363C000D9244 /* FavouriteListDependencies.swift in Sources */,
+				E7A7CCFA2B9F2A10000D9244 /* UserInfoDependencies.swift in Sources */,
 				E7B566022B89DFAF00D532F9 /* Constants.swift in Sources */,
 				E7D441AE2B84DD1F006EBD73 /* GFAvatarImageView.swift in Sources */,
 				E79EBA8F2B9B9A4A004743D1 /* FavouriteListViewModel.swift in Sources */,
@@ -639,6 +661,7 @@
 				E7B8601C2B81D23C0052F6C0 /* Follower.swift in Sources */,
 				E7BC8FEA2B93081600DA0124 /* GFAlertContainerView.swift in Sources */,
 				E724C55D2B80B99900FE5809 /* GFTitleLabel.swift in Sources */,
+				E7A7CCFF2B9F3019000D9244 /* ImageManager.swift in Sources */,
 				E7B566002B89DA9D00D532F9 /* GFSecondaryTitleLabel.swift in Sources */,
 				E7BB92E12B8E24D800B1CD50 /* PersistenceManager.swift in Sources */,
 				E7D5E2712B89AE9B00340E3E /* GFEmptyStateView.swift in Sources */,
@@ -646,6 +669,7 @@
 				E7B566142B8A025800D532F9 /* Date+Ext.swift in Sources */,
 				E7B860212B81D6B70052F6C0 /* NetworkManager.swift in Sources */,
 				E724C55B2B80AE2000FE5809 /* FollowerListVC.swift in Sources */,
+				E7A7CCFD2B9F2A77000D9244 /* ServiceLocator.swift in Sources */,
 				E724C5552B80934600FE5809 /* FavouriteListVC.swift in Sources */,
 				E724C5252B808C6200FE5809 /* SceneDelegate.swift in Sources */,
 				E7B565FC2B89D13F00D532F9 /* UserInfoVC.swift in Sources */,

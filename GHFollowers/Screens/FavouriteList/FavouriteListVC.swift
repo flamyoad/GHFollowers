@@ -15,10 +15,12 @@ class FavouriteListVC: UIViewController {
     var favourites: [Follower] = []
     
     var viewModel: FavouriteListViewModel!
+    var persistenceManager: PersistenceManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = FavouriteListViewModel()
+        self.viewModel = FavouriteListViewModel(dependencies: ServiceLocator.shared)
+        self.persistenceManager = ServiceLocator.shared.getPersistenceManager() // move logic to vm!!!!!!!
         view.backgroundColor = .systemCyan
         setupViewController()
         setupTableView()
@@ -88,7 +90,7 @@ extension FavouriteListVC: UITableViewDataSource, UITableViewDelegate {
         guard editingStyle == .delete else { return }
         let favourite = favourites[indexPath.row]
     
-        PersistenceManager.updateWith(favourite: favourite, actionType: .remove) { [weak self] error in
+        persistenceManager.updateWith(favourite: favourite, actionType: .remove) { [weak self] error in
             guard let self = self else { return }
             guard let error = error else { 
                 favourites.remove(at: indexPath.row)

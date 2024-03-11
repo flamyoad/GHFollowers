@@ -9,7 +9,7 @@ import UIKit
 
 class GFAvatarImageView: UIImageView {
     
-    let cache = NetworkManager.shared.cache
+    let cache: NSCache<NSString, UIImage> = ServiceLocator.shared.getImageManager().getCache()
     
     let placeholderImage = Images.placeholder
 
@@ -20,6 +20,11 @@ class GFAvatarImageView: UIImageView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    convenience init(frame: CGRect, sl: ServiceLocator) {
+        self.init(frame: frame)
+        setup()
     }
 
     private func setup() {

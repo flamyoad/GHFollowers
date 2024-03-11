@@ -11,16 +11,24 @@ enum PersistenceActionType {
     case add, remove
 }
 
-enum PersistenceManager {
+protocol PersistenceManager {
+    func updateWith(favourite: Follower, actionType: PersistenceActionType, completionHandler: @escaping (ApiError?) -> Void)
+    func retrieveFavourites(completionHandler: @escaping (Result<[Follower], ApiError>) -> Void)
+    func save(favourites: [Follower]) -> ApiError?
+}
+
+class PersistenceManagerImpl: PersistenceManager {
     
-    static private let defaults: UserDefaults = .standard
+    private let defaults: UserDefaults = .standard
     
     enum Keys {
         static let favourites = "favourites"
     }
     
-    static func updateWith(favourite: Follower, actionType: PersistenceActionType, completionHandler: @escaping (ApiError?) -> Void) {
-        retrieveFavourites { result in
+    func updateWith(favourite: Follower, actionType: PersistenceActionType, completionHandler: @escaping (ApiError?) -> Void) {
+        retrieveFavourites { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let favourites):
                 var retrievedFavourites = favourites
@@ -34,7 +42,7 @@ enum PersistenceManager {
                 case .remove:
                     retrievedFavourites.removeAll { $0.login == favourite.login }
                 }
-                completionHandler(save(favourites: retrievedFavourites))
+                completionHandler(self.save(favourites: retrievedFavourites))
                 
             case .failure(let error):
                 completionHandler(error)
@@ -44,7 +52,7 @@ enum PersistenceManager {
     
     // Consider to use defaultValue when nil,
     // example value ?? defaultValue
-    static func retrieveFavourites(completionHandler: @escaping (Result<[Follower], ApiError>) -> Void) {
+    func retrieveFavourites(completionHandler: @escaping (Result<[Follower], ApiError>) -> Void) {
         guard let favouritesData = defaults.object(forKey: Keys.favourites) as? Data else {
             completionHandler(.success([]))
             return
@@ -59,7 +67,7 @@ enum PersistenceManager {
         }
     }
     
-    static func save(favourites: [Follower]) -> ApiError? {
+    func save(favourites: [Follower]) -> ApiError? {
         do {
             let encoder = JSONEncoder()
             let encodedFavourites = try encoder.encode(favourites)

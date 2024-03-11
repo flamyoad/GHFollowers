@@ -7,7 +7,11 @@
 
 import UIKit
 
+typealias GfUserInfoHeaderDependencies = HasImageCache
+
 class GFUserInfoHeaderVC: UIViewController {
+
+    private let imageManager: ImageManager = ServiceLocator.shared.getImageManager()
 
     let avatarImageView = GFAvatarImageView(frame: .zero)
     let usernameLabel = GFTitleLabel(textAlignment: .left, fontSize: 34)
@@ -17,7 +21,7 @@ class GFUserInfoHeaderVC: UIViewController {
     let bioLabel = GFBodyLabel(textAlignment: .left)
     
     var user: User!
-    
+        
     init(user: User) {
         super.init(nibName: nil, bundle: nil)
         self.user = user
@@ -48,7 +52,7 @@ class GFUserInfoHeaderVC: UIViewController {
     
     func downloadAvatarImage() {
         Task {
-            let image = await NetworkManager.shared.downloadImage(from: user.avatarUrl) ?? Images.placeholder
+            let image = await imageManager.downloadImage(from: user.avatarUrl) ?? Images.placeholder
             DispatchQueue.main.async {
                 self.avatarImageView.image = image
             }

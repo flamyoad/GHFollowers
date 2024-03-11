@@ -13,6 +13,9 @@ class FollowerListVC: UIViewController {
         case main
     }
 
+    private var networkManager: NetworkManager! // ???? why
+    private var persistenceManager: PersistenceManager!
+    
     var username: String!
     var followers: [Follower] = []
     var filteredFollowers: [Follower] = []
@@ -28,6 +31,8 @@ class FollowerListVC: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.username = username
         self.title = username
+        self.networkManager = ServiceLocator.shared.getNetworkManager()
+        self.persistenceManager = ServiceLocator.shared.getPersistenceManager()
     }
     
     required init?(coder: NSCoder) {
@@ -81,7 +86,7 @@ class FollowerListVC: UIViewController {
         
         Task {
             do {
-                let followers = try await NetworkManager.shared.getFollowers(for: username, page: page)
+                let followers = try await networkManager.getFollowers(for: username, page: page)
                 updateUI(with: followers)
             } catch {
                 if let apiError = error as? ApiError {
@@ -138,9 +143,9 @@ class FollowerListVC: UIViewController {
         
         Task {
             do {
-                let user = try await NetworkManager.shared.getUserInfo(for: username)
+                let user = try await networkManager.getUserInfo(for: username)
                 let favourite = Follower(login: user.login, avatarUrl: user.avatarUrl)
-                PersistenceManager.updateWith(favourite: favourite, actionType: .add) { [weak self] error in
+                persistenceManager.updateWith(favourite: favourite, actionType: .add) { [weak self] error in
                     guard let self = self else { return }
                     guard let error = error else {
                         self.presentGFAlertOnMainThread(title: "Success", message: "You have successfully favourited this user", buttonTitle: "Hooray")

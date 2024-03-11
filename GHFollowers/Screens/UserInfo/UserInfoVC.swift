@@ -28,7 +28,7 @@ class UserInfoVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = UserInfoViewModel()
+        viewModel = UserInfoViewModel(dependencies: ServiceLocator.shared)
         setupViewController()
         setupLayout()
         observeUserInfo()

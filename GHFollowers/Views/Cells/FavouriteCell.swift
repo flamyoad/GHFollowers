@@ -9,6 +9,8 @@ import UIKit
 
 class FavouriteCell: UITableViewCell {
 
+    private let imageManager: ImageManager = ServiceLocator.shared.getImageManager()
+    
     static let reuseID = "FavouriteCell"
     
     let avatarImageView = GFAvatarImageView(frame: .zero)
@@ -27,7 +29,7 @@ class FavouriteCell: UITableViewCell {
         usernameLabel.text = favourite.login
         
         Task {
-            let image = await NetworkManager.shared.downloadImage(from: favourite.avatarUrl) ?? Images.placeholder
+            let image = await imageManager.downloadImage(from: favourite.avatarUrl) ?? Images.placeholder
             DispatchQueue.main.async {
                 self.avatarImageView.image = image
             }
